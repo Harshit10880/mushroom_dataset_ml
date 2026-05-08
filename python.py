@@ -70,3 +70,60 @@ plt.figure(figsize=(16, 10))
 sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap='coolwarm', square=True)
 plt.title("Mushroom Feature Correlation Heatmap")
 plt.savefig('correlation_heatmap.png')
+
+
+
+
+# Data preprocessing
+
+selected_features = ['odor', 'spore-print-color', 'gill-color', 'ring-type', 'stalk-surface-above-ring']
+target = 'class'
+
+# Create a new dataframe with only your chosen columns
+df_subset = df[selected_features + [target]].copy()
+
+le = LabelEncoder()
+df_subset['class'] = le.fit_transform(df_subset['class'])
+df_subset['class']
+
+# 3. One-Hot Encode the Features
+# This creates separate 0/1 columns for each smell, color, etc.
+df_final = pd.get_dummies(df_subset, columns=selected_features, dtype=int)
+
+print("New Dataset Shape:", df_final.shape)
+print("\nFirst 5 rows of the transformed data:")
+print(df_final.head())
+
+
+
+
+
+# Train split data
+
+from sklearn.model_selection import train_test_split
+
+X = df_final.drop('class', axis=1)
+y = df_final['class']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+print(f"Total mushrooms: {len(df_final)}")
+print(f"Training set size: {len(X_train)} (Questions for the model)")
+print(f"Testing set size: {len(X_test)} (The Surprise Quiz)")
+
+
+
+
+
+# Logistic regression problem
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+from sklearn.linear_model import LogisticRegression
+model = LogisticRegression(random_state=42)
+
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Model Accuracy: {accuracy * 100:.2f}%")
