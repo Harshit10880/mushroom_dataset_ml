@@ -127,3 +127,28 @@ y_pred = model.predict(X_test)
 
 accuracy = accuracy_score(y_test, y_pred)
 print(f"Model Accuracy: {accuracy * 100:.2f}%")
+
+
+
+
+# confusion matrix phase
+
+from sklearn.metrics import confusion_matrix, classification_report
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+cm = confusion_matrix(y_test, y_pred)
+
+
+plt.figure(figsize=(6,4))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=['Edible', 'Poisonous'],
+            yticklabels=['Edible', 'Poisonous'])
+plt.xlabel('Predicted Label')
+plt.ylabel('True Label')
+plt.title('Mushroom Classification Confusion Matrix')
+plt.show()
+
+
+print("\n--- Detailed Performance Report ---")
+print(classification_report(y_test, y_pred, target_names=['Edible', 'Poisonous']))
