@@ -36,3 +36,49 @@ plt.show()
 
 print(classification_report(y_test_new_svm, y_pred_new_svm_final, 
                             target_names=['Edible', 'Poisonous']))
+
+
+
+
+# CHECK FOR SUPPOER VECTORS
+
+features_viz = ['odor', 'spore-print-color', 'gill-color', 'ring-type', 'stalk-surface-above-ring']
+
+y_viz = LabelEncoder().fit_transform(df['class'])
+X_encoded_viz = pd.get_dummies(df[features_viz], dtype=int)
+
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X_encoded_viz)
+
+svm_viz = SVC(kernel='linear', random_state=42)
+svm_viz.fit(X_pca, y_viz)
+
+# Create a Mesh Grid to draw the decision boundary
+h = .02  # step size in the mesh
+x_min, x_max = X_pca[:, 0].min() - 1, X_pca[:, 0].max() + 1
+y_min, y_max = X_pca[:, 1].min() - 1, X_pca[:, 1].max() + 1
+xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+
+# Predict across the entire mesh grid
+Z = svm_viz.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+# Plotting
+plt.figure(figsize=(10, 7))
+# Draw the decision boundary (the "Hyperplane" area)
+plt.contourf(xx, yy, Z, cmap=plt.cm.coolwarm, alpha=0.3)
+
+# Plot the individual mushrooms (Red=Poisonous, Blue=Edible)
+scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y_viz, cmap=plt.cm.coolwarm, edgecolors='k', s=30)
+
+# CIRCLE THE SUPPORT VECTORS
+plt.scatter(svm_viz.support_vectors_[:, 0], svm_viz.support_vectors_[:, 1], s=100,
+            linewidth=1, facecolors='none', edgecolors='black', label='Support Vectors')
+
+plt.title('SVM Decision Boundary & Support Vectors (PCA Reduced 2D)')
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.legend()
+plt.show()
+
+print(f"Number of Support Vectors found: {len(svm_viz.support_vectors_)}")
