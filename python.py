@@ -1,6 +1,13 @@
 # EDA ( exploratory data analysis )
-
 import pandas as pd
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
+from sklearn.feature_selection import mutual_info_classif
+from sklearn.model_selection import train_test_split
+
+
 
 df = pd.read_csv("mushrooms.csv")
 df.head(5)
@@ -11,17 +18,9 @@ df.info()
 
 df.duplicated().sum()
 
+# First phase
+
 # Feature Association & Selection
-
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import LabelEncoder
-from sklearn.feature_selection import mutual_info_classif
-
-# 1. Load data
-df = pd.read_csv('mushrooms.csv')
-
 # 2. Encode categorical data to numbers for the math engine
 df_encoded = df.apply(LabelEncoder().fit_transform)
 
@@ -30,6 +29,8 @@ y = df_encoded['class']              # Target
 
 # 3. Calculate Mutual Information (Relationship Strength)
 # discrete_features=True because our data is categorical
+# see the corelation as a score from 0 to 1, where 1 means a perfect relationship and 0 means no relationship
+
 mi_scores = mutual_info_classif(X, y, discrete_features=True, random_state=42)
 mi_results = pd.Series(mi_scores, name="MI Scores", index=X.columns).sort_values(ascending=False)
 
@@ -46,17 +47,9 @@ print("Top 5 Most Related Features:")
 print(mi_results.head(5))
 
 
+# Second things
 
 # Advanced Data Visualization (Correlation Analysis)
-
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import LabelEncoder
-
-# Load the dataset
-df = pd.read_csv('mushrooms.csv')
-
 # 1. Transform categorical text into numbers so we can do math
 # This is necessary because correlation formulas require numerical input
 df_encoded = df.apply(LabelEncoder().fit_transform)
@@ -75,7 +68,6 @@ plt.savefig('correlation_heatmap.png')
 
 
 # Data preprocessing
-
 selected_features = ['odor', 'spore-print-color', 'gill-color', 'ring-type', 'stalk-surface-above-ring']
 target = 'class'
 
@@ -97,11 +89,7 @@ print(df_final.head())
 
 
 
-
 # Train split data
-
-from sklearn.model_selection import train_test_split
-
 X = df_final.drop('class', axis=1)
 y = df_final['class']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -114,12 +102,18 @@ print(f"Testing set size: {len(X_test)} (The Surprise Quiz)")
 
 
 
+
 # Logistic regression problem
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
-
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, classification_report
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+
 model = LogisticRegression(random_state=42)
 
 model.fit(X_train, y_train)
@@ -129,13 +123,7 @@ accuracy = accuracy_score(y_test, y_pred)
 print(f"Model Accuracy: {accuracy * 100:.2f}%")
 
 
-
-
 # confusion matrix phase
-
-from sklearn.metrics import confusion_matrix, classification_report
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 cm = confusion_matrix(y_test, y_pred)
 
