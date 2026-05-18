@@ -1,3 +1,5 @@
+from common_imports import *
+
 best_features_svm = ['odor', 'spore-print-color', 'gill-color', 'ring-type', 'stalk-surface-above-ring']
 
 # Encode Target with a unique variable name

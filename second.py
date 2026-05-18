@@ -1,3 +1,5 @@
+from common_imports import *   
+
 new_features = ['gill-size', 'population', 'bruises', 'habitat', 'stalk-root']
 le = LabelEncoder()
 df['class'] = le.fit_transform(df['class'])
