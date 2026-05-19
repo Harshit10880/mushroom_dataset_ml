@@ -1,4 +1,5 @@
 from common_imports import *   
+from python import *    
 
 new_features = ['gill-size', 'population', 'bruises', 'habitat', 'stalk-root']
 le = LabelEncoder()
@@ -12,6 +13,8 @@ new_model = LogisticRegression(random_state=42)
 new_model.fit(X_train, y_train)
 y_pred = new_model.predict(X_test)
 new_accuracy = accuracy_score(y_test, y_pred)
+
+# hello world
 
 print(f"New Feature Set Accuracy: {new_accuracy * 100:.2f}%")
 
