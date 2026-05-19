@@ -1,5 +1,6 @@
 # trying it with other features
-from common_imports import *   
+from common_imports import *  
+from python import * 
 
 new_features_svm = ['gill-size', 'population', 'bruises', 'habitat', 'stalk-root']
 
